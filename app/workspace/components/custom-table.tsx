@@ -2,28 +2,36 @@
 
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Button, Input } from "@heroui/react"
 import { Filter, Plus } from "lucide-react"
-import type { TableColumn as CustomTableColumn, TableRow as CustomTableRow } from "../../../types/table"
+import type { TableColumn as CustomTableColumn, TableRow as CustomTableRow } from "@/types/table"
 import Image from "next/image"
+import { useState } from "react"
 
-interface CustomTableProps {
-    columns: CustomTableColumn[]
-    rows: CustomTableRow[]
-    selectedKeys: Set<string>
-    onSelectionChange: (keys: Set<string>) => void
-    onCellChange: (rowId: string, columnKey: string, value: string) => void
-    onAddColumn: () => void
-    onAddRow: () => void
-}
 
-export function CustomTable({
-    columns,
-    rows,
-    selectedKeys,
-    onSelectionChange,
-    onCellChange,
-    onAddColumn,
-    onAddRow,
-}: CustomTableProps) {
+// interface CustomTableProps {
+//     columns: CustomTableColumn[]
+//     rows: CustomTableRow[]
+//     selectedKeys: Set<string>
+//     onSelectionChange: (keys: Set<string>) => void
+//     onCellChange: (rowId: string, columnKey: string, value: string) => void
+//     onAddColumn: () => void
+//     onAddRow: () => void
+// }
+
+export function CustomTable(props: any) {
+    const {
+        columns,
+        rows,
+        selectedKeys,
+        onSelectionChange,
+        onCellChange,
+        onAddColumn,
+        onAddRow,
+        onColumnNameUpdate
+    } = props
+
+    const [editingHeader, setEditingHeader] = useState<string | null>(null);
+    const [editingCell, setEditingCell] = useState<{ rowId: string, columnId: string } | null>(null);
+
     return (
         <div className="space-y-4 px-20">
             <div className="flex items-center gap-4">
@@ -53,29 +61,86 @@ export function CustomTable({
                 selectionMode="multiple"
                 selectedKeys={selectedKeys}
                 onSelectionChange={(keys) => onSelectionChange(keys as Set<string>)}
-                onRowAction={(key) => null}
+                onRowAction={(key) => console.log("row action", key)}
             >
                 <TableHeader>
-                    {columns.map((column) => (
-                        <TableColumn key={column.id}>{column.label}</TableColumn>
+                    {columns?.map(column => (
+                        <TableColumn key={column.id}>
+                            {editingHeader === column.id ? (
+                                <Input
+                                    size="sm"
+                                    defaultValue={column.label}
+                                    variant="underlined"
+                                    autoFocus
+                                    // className="bg-transparent"
+                                    // classNames={{
+                                    //     input: "bg-transparent shadow-none font-semibold",
+                                    //     inputWrapper: "shadow-none bg-transparent"
+                                    // }}
+                                    onBlur={(e) => {
+                                        setEditingHeader(null);
+                                        onColumnNameUpdate(column.id, e.target.value);
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            setEditingHeader(null);
+                                            onColumnNameUpdate(column.id, e.currentTarget.value);
+                                        }
+                                        if (e.key === 'Escape') {
+                                            setEditingHeader(null);
+                                        }
+                                    }}
+                                />
+                            ) : (
+                                <div
+                                    className="cursor-pointer font-semibold"
+                                    onClick={() => setEditingHeader(column.id)}
+                                >
+                                    {column.label}
+                                </div>
+                            )}
+                        </TableColumn>
                     ))}
                     <TableColumn>
-                        <Button size="sm" variant="light" startContent={<Plus className="h-4 w-4" />} onPress={onAddColumn}>
+                        <Button
+                            size="sm"
+                            variant="light"
+                            startContent={<Plus className="h-4 w-4" />}
+                            onPress={onAddColumn}
+                        >
                             Add Column
                         </Button>
                     </TableColumn>
                 </TableHeader>
                 <TableBody>
-                    {rows.map((row) => (
+                    {rows?.map((row: CustomTableRow) => (
                         <TableRow key={row.id}>
-                            {columns.map((column) => (
-                                <TableCell key={`${row.id}-${column.id}`}>
-                                    <Input
-                                        isReadOnly
-                                        size="sm"
-                                        value={row[column.key]}
-                                        onChange={(e) => onCellChange(row.id, column.key, e.target.value)}
-                                    />
+                            {columns.map((column: CustomTableColumn) => (
+                                <TableCell key={`${row.id}-${column.id}`}
+                                    onClick={() => setEditingCell({ rowId: row.id, columnId: column.id })}
+                                >
+                                    {editingCell?.rowId === row.id && editingCell?.columnId === column.id ? (
+                                        <Input
+                                            size="sm"
+                                            variant="underlined"
+                                            value={row[column.key]}
+                                            onChange={e => onCellChange(row.id, column.key, e.target.value)}
+                                            autoFocus // user can immediately start typing when cell becomes editable
+                                            onBlur={() => setEditingCell(null)} // exit edit mode when clicked away
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    setEditingCell(null);
+                                                }
+                                                if (e.key === 'Escape') {
+                                                    setEditingCell(null);
+                                                }
+                                            }}
+                                        />
+                                    ) : (
+                                        <div className="px-2 py-1 cursor-pointer">
+                                            {row[column.key]}
+                                        </div>
+                                    )}
                                 </TableCell>
                             ))}
                             <TableCell />

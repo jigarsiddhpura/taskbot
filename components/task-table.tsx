@@ -16,9 +16,9 @@ export function TaskTable({ tasks, onDeleteTask }: TaskTableProps) {
             case TaskStatus.COMPLETED:
                 return <Image src="/completed.svg" alt="Completed" width={16} height={16} />
             case TaskStatus.IN_PROGRESS:
-                return <Image src="/inProgress.svg" alt="In Progress" width={16} height={16} />
+                return <Image src="/inProgress.svg" alt="In Progress" width={16} height={16}/>
             default:
-                return <Image src="/pending.svg" alt="Pending" width={16} height={16} />
+                return <Image src="/pending.svg" alt="Pending" width={16} height={16}/>
         }
     }
 
@@ -50,7 +50,7 @@ export function TaskTable({ tasks, onDeleteTask }: TaskTableProps) {
                             </a>
                         </TableCell>
                         <TableCell>
-                            <Chip size="sm" startContent={getStatusIcon(task.status)}>
+                            <Chip size="sm" startContent={getStatusIcon(task.status)} className={`${task.status === TaskStatus.PENDING ? "bg-gray-200 text-black" : "bg-black text-white"}`}>
                                 {task.status.replace("_", " ")}
                             </Chip>
                         </TableCell>

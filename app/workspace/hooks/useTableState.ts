@@ -77,12 +77,22 @@ export function useTableState() {
         }))
     }, [])
 
+    const updateColumnLabel = useCallback((columnId: string, newLabel: string) => {
+        setState((prev) => ({
+            ...prev,
+            columns: prev.columns.map((col) => 
+                col.id === columnId ? { ...col, label: newLabel } : col
+            ),
+        }))
+    }, [])
+
     return {
         state,
         addColumn,
         addRow,
         updateSelection,
         updateCell,
+        updateColumnLabel
     }
 }
 

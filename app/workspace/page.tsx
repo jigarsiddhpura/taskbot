@@ -11,6 +11,7 @@ export default function WorkspacePage() {
         addRow,
         updateSelection,
         updateCell,
+        updateColumnLabel
     } = useTableState()
 
     return (
@@ -26,6 +27,7 @@ export default function WorkspacePage() {
                         onCellChange={updateCell}
                         onAddColumn={addColumn}
                         onAddRow={addRow}
+                        onColumnNameUpdate={updateColumnLabel}
                     />
                 </div>
             </main>

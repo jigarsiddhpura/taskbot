@@ -7,11 +7,12 @@ import type { TaskScenario } from "@/types/task"
 interface TaskCardProps {
     task: TaskScenario
     onSelect: (taskId: string) => void
+    className?: string
 }
 
-export function TaskCard({ task, onSelect }: TaskCardProps) {
+export function TaskCard({ task, onSelect, className }: TaskCardProps) {
     return (
-        <Card className="group hover:shadow-lg transition-shadow duration-200" shadow="sm">
+        <Card className={`group hover:shadow-xl transition-shadow duration-200 ${className}`} shadow="lg">
             <CardBody className="gap-3">
                 <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center group-hover:bg-gray-200 transition-colors duration-200">
                     <Image

@@ -7,6 +7,7 @@ import { TaskTable } from "@/components/task-table"
 import { NewTaskModal } from "@/components/new-task-modal"
 import { useTasks } from "@/hooks/useTasks"
 import { TaskStatus } from "@/types/task"
+import {useRouter} from "next/navigation"
 
 const initialTasks = [
   {
@@ -39,14 +40,21 @@ const initialTasks = [
 ]
 
 export default function TaskManagement() {
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const router = useRouter();
+  // const [isModalOpen, setIsModalOpen] = useState(false)
   const { tasks, addTask, deleteTask, search, setSearch, statusFilter, setStatusFilter } = useTasks(initialTasks)
 
   return (
     <div className="container mx-auto py-4 px-16">
       <div className="flex justify-between items-center mb-8 border-b border-gray-200 pb-4">
         <h1 className="text-2xl font-semibold">Task Management</h1>
-        <Button className="bg-black text-white" onPress={() => setIsModalOpen(true)} startContent={<Plus className="h-4 w-4" />}>
+        <Button className="bg-black text-white"
+          onPress={() => {
+            // setIsModalOpen(true);
+            router.push("/new-task");
+          }}
+          startContent={<Plus className="h-4 w-4" />}
+        >
           New Task
         </Button>
       </div>
@@ -82,7 +90,7 @@ export default function TaskManagement() {
 
         <TaskTable tasks={tasks} onDeleteTask={deleteTask} />
 
-        <NewTaskModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSubmit={addTask} />
+        {/* <NewTaskModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSubmit={addTask} /> */}
       </div>
 
     </div>

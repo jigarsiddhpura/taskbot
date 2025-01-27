@@ -5,6 +5,7 @@ import { Button } from "@heroui/react"
 import { TaskBotNavbar } from "@/components/navbar"
 import { TaskCard } from "@/components/task-card"
 import type { TaskScenario } from "@/types/task"
+import { useRouter } from "next/navigation"
 
 const taskScenarios: TaskScenario[] = [
     {
@@ -50,6 +51,7 @@ const user = {
 }
 
 export default function TaskSelection() {
+    const router = useRouter()
     const [selectedTask, setSelectedTask] = useState<string | null>(null)
 
     const handleTaskSelect = (taskId: string) => {
@@ -58,8 +60,8 @@ export default function TaskSelection() {
 
     const handleCreateTask = () => {
         if (selectedTask) {
-            // Handle task creation
             console.log("Creating task with scenario:", selectedTask)
+            router.push('/workspace')
         }
     }
 
@@ -74,7 +76,9 @@ export default function TaskSelection() {
 
                         <div className="grid gap-6 md:grid-cols-3 mb-8">
                             {taskScenarios.map((task) => (
-                                <TaskCard key={task.id} task={task} onSelect={handleTaskSelect} />
+                                <TaskCard key={task.id} task={task} onSelect={handleTaskSelect} 
+                                className={`${selectedTask === task.id ? "bg-gray-200" : ""}`}
+                                />
                             ))}
                         </div>
 
@@ -82,7 +86,7 @@ export default function TaskSelection() {
                             <Button variant="flat" color="default">
                                 Cancel
                             </Button>
-                            <Button color="primary" isDisabled={!selectedTask} onPress={handleCreateTask}>
+                            <Button className={"bg-black text-white"} isDisabled={!selectedTask} onPress={handleCreateTask}>
                                 Create Task
                             </Button>
                         </div>
