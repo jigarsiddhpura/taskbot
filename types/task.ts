@@ -16,5 +16,18 @@ export const TaskSchema = z.object({
     result: z.string(),
 })
 
+export interface TaskScenario {
+    id: string
+    title: string
+    description: string
+    icon: string
+    iconAlt: string
+}
+
+export interface User {
+    name: string
+    avatar: string
+}
+
 export type Task = z.infer<typeof TaskSchema>
 

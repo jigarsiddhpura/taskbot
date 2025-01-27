@@ -51,7 +51,7 @@ export default function TaskManagement() {
         </Button>
       </div>
 
-      <div className="bg-[rgba(229, 231, 235, 1)]">
+      <div className="bg-gray-50">
         <div className="flex justify-between gap-4 mb-6">
           <Input
             placeholder="Search tasks..."
